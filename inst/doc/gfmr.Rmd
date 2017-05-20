@@ -1,0 +1,122 @@
+---
+title: "gfmR Vignette"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{gfmR Vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\usepackage[utf8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+### Introduction
+
+This document is to show how to use the `gfmR` package in R. This package implements group fused multinomial regression model described by "Automatic Response Category Combination in Multinomial Logistic Regression" by Bradley S. Price, Charles J. Geyer and Adam J. Rothman.  This vignette will
+describe the use of the major functions in the package using the example presented in the same manuscript.  The process will be directly applied to finding response category groupings of the self
+identified political party contained `nes96` data in the `faraway` package based on age, education, and income.  For methodology description we refer the reader to the manuscript which can be found at: https://arxiv.org/abs/1705.03594.  
+
+### Data Description
+```{r echo=FALSE}
+load("gfmR_ex.RData")
+```
+
+```{r}
+library(gfmR)
+data(nes96)
+head(nes96)
+```
+We have 7 levels of personal identification:
+```{r}
+levels(nes96$PID)
+```
+
+
+### Tuning Parameter Selection
+
+Penalized likelihood methods rely on tuning parameter selection, so that is where we will begin 
+our discussion.  To show the basic functionality of the software we first need to understand
+the data requirements.  The first that we have a matrix of category counts for the response variable.
+We say that the `Y` matrix needs has rows that correspond to observations and columns that correspond
+to observed category counts.  Note the current implementation is given for a multinomial experiment
+size of 1.  
+
+We're going to use the matrix `Response` to be our response in this example. 
+```{r}
+attach(nes96)
+Response=matrix(0,944,7)
+for(i in 1:944){
+  if(PID[i]=="strRep"){Response[i,1]=1}
+  if(PID[i]=="weakRep"){Response[i,2]=1}
+  if(PID[i]=="indRep"){Response[i,3]=1}
+  if(PID[i]=="indind"){Response[i,4]=1}
+  if(PID[i]=="indDem"){Response[i,5]=1}
+  if(PID[i]=="weakDem"){Response[i,6]=1}
+  if(PID[i]=="strDem"){Response[i,7]=1}
+}
+head(Response)
+```
+
+Next we will define our penalty set, this is the set that that has elements that will be fused
+together to create the estimator.  We are going to use the ordered example from the manuscript,
+but the ordered example could be used as well.  
+```{r}
+Hmat2=matrix(0,dim(Response)[2],dim(Response)[2])
+for(j in 1:6){
+  Hmat2[j,j+1]=1
+  Hmat2[j+1,j]=1
+}
+Hmat2[3,5]=1
+Hmat2[5,3]=1
+```
+
+The next step is to establish the set of predictors that we will use to analyze the data. We will
+simply just use the model matrix that is produced by `lm`.  
+```{r}
+ModMat<-lm(popul~age+educ+income,x=TRUE)$x
+
+X=cbind(ModMat[,1],apply(ModMat[,-1],2,scale))
+```
+
+Finally we are going to create a 5 fold cross validation where we are randomly going 
+assign are going to randomly assign folds.  
+```{r}
+set.seed(1010)
+n=dim(Response)[1]
+sampID=rep(5,n)
+samps=sample(1:n)
+mine=floor(n/5)
+for(j in 1:4){
+  sampID[samps[((j-1)*mine+1):(j*mine)]]=j
+}
+```
+
+The function `GFMR.cv` is the cross validation function.  We have added multicore functionality for platforms that support it.  WINDOWS users should use `n.cores=1`.  The example provided here has 944
+observations with 7 response categories.  We implement 5 cores to speed up the 5 fold cross validation.
+```{r,eval=FALSE}
+o1<-GFMR.cv(Response,X,lamb = 2^seq(4.2,4.3,.1),H=Hmat2,sampID = sampID,n.cores =5,rho=10^2)
+```
+
+```{r}
+names(o1)
+o1$vl
+which(o1$vl==max(o1$vl))
+o1$lambda[2]
+```
+
+
+## Basic Model Run
+
+Once the tuning parameter has been selected we refit the model on the entire data.  We have adjusted
+iterations and tuning parameters for speed and convergence.  
+```{r, eval=FALSE}
+mod<-GroupFusedMulti(Response,X,lambda=2^4.3,H=Hmat2,rho=10^2,iter=50,tol1=10^-4,tol2=10^-4)
+## save.image("election_pred.Rdata")
+```
+```{r}
+mod
+````
+
+Finally we see the results of the tuning parameter selection with 5 groups.  We see the combination of
+the Independent republican, democrat and independents.

@@ -1,0 +1,14 @@
+fba21645f42af0e1b07d6b6c987edba5 *DESCRIPTION
+0671cb77f673da8c24275925d3b6e36d *NAMESPACE
+7f2fe79aa4d7ab3248b8267f1a982f89 *R/gfmR.R
+b14554c1f24a831a8c9d50562e22ee67 *build/vignette.rds
+40ff51820fd2cbec1ac5e8143a0e32ec *inst/doc/gfmr.R
+9122503d22a9a7017c23bb01b9c4bae3 *inst/doc/gfmr.Rmd
+2aad995c42cd2eeabb2dfdae575772d3 *inst/doc/gfmr.html
+89822decc008c1b1eeecade601023165 *man/GFMR.cv.Rd
+9c1e271338aabbad3700d9e3d1e8b454 *man/GroupFusedMulti.Rd
+e591e36ec688d4973b73a226129ace93 *man/predict.gfmR.Rd
+f52bc9b527691828185a8fcd8fb4f299 *man/print.gfmR.Rd
+7e987923ea235c57315278cac41f8d53 *man/print.gfmR.cv.Rd
+e71d17a0757f2466ef9b18e45e0636aa *vignettes/gfmR_ex.RData
+9122503d22a9a7017c23bb01b9c4bae3 *vignettes/gfmr.Rmd
