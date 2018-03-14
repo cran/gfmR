@@ -1,8 +1,8 @@
 Package: gfmR
 Type: Package
 Title: Implements Group Fused Multinomial Regression
-Version: 1.0-1
-Date: 2017-05-11
+Version: 1.1-0
+Date: 2018-03-13
 Author: Brad Price
 Maintainer: Brad Price <brad.price@mail.wvu.edu>
 Depends: R (>= 3.1.0), parallel, nnet, faraway
@@ -18,6 +18,6 @@ License: GPL-2
 LazyLoad: yes
 NeedsCompilation: yes
 URL: https://www.r-project.org
-Packaged: 2017-05-19 13:20:45 UTC; brad1
+Packaged: 2018-03-13 20:46:19 UTC; brad1
 Repository: CRAN
-Date/Publication: 2017-05-20 07:14:47 UTC
+Date/Publication: 2018-03-14 14:41:11 UTC

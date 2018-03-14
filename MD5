@@ -1,7 +1,7 @@
-fba21645f42af0e1b07d6b6c987edba5 *DESCRIPTION
+98e936b5a1c9faf5bf61f1f164539231 *DESCRIPTION
 0671cb77f673da8c24275925d3b6e36d *NAMESPACE
-7f2fe79aa4d7ab3248b8267f1a982f89 *R/gfmR.R
-b14554c1f24a831a8c9d50562e22ee67 *build/vignette.rds
+829c25f02b02b095fa170ca9eadbf46b *R/gfmR.R
+48e06ae7edfe0ea55c737bf22c9d07d1 *build/vignette.rds
 40ff51820fd2cbec1ac5e8143a0e32ec *inst/doc/gfmr.R
 9122503d22a9a7017c23bb01b9c4bae3 *inst/doc/gfmr.Rmd
 2aad995c42cd2eeabb2dfdae575772d3 *inst/doc/gfmr.html

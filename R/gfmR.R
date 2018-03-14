@@ -133,7 +133,8 @@ UpdateBeta<-function(Y2,X,Z,U,rho,H,tol=10^-7,Inits=FALSE,iters=10^3){
   BetaN1=BetaN+1
   C=dim(BetaN)[2]
   it=0
-  while(sum(abs(BetaN-BetaN1)^2)/sum(abs(BetaN1)^2)>tol && it<=iters){
+  # while(sum(abs(BetaN-BetaN1)^2)/sum(abs(BetaN1)^2)>tol && it<=iters){
+  while(sum(abs(BetaN-BetaN1))>tol && it<=iters){
     BetaN1=BetaN
     for(k in 1:(C-1)){
       Beta2=BetaN[,k]
@@ -193,8 +194,8 @@ UpdateZU<-function(BetaN,Z,U,D,lambda,rho,H,tol=10^-4,tol2=10^-4,mu=10,TD=2){
         Acm=BetaN[,k]-BetaN[,m]+U[[k]][,m]
         Z[[k]][,m]=Acm*pmax(1-(lambda/rho)*(1/sqrt(sum(Acm^2))),0)
         Z[[m]][,k]=-Z[[k]][,m]
-        U[[k]][,m]=U[[k]][,m]+BetaN[,k]-BetaN[,m]-Z[[k]][,m]
-        U[[m]][,k]=U[[m]][,k]+BetaN[,m]-BetaN[,k]-Z[[m]][,k]
+        U[[k]][,m]=U[[k]][,m]+(BetaN[,k]-BetaN[,m]-Z[[k]][,m])
+        U[[m]][,k]=U[[m]][,k]+(BetaN[,m]-BetaN[,k]-Z[[m]][,k])
         Tol1=Tol1+sum((U1[[k]][,m]-U[[k]][,m])^2)
         Tol2=Tol2+sum((BetaN[,k]-BetaN[,m]-Z[[k]][,m])^2)
       }
@@ -328,7 +329,7 @@ GroupFusedMulti<-function(Y,X,lambda,H,tol1=10^-7,tol2=10^-7,TD=2,rho=10^-8,tau1
 ### Generic print function to return 
 
 print.gfmR<-function(x,...){
-    obj=x
+  obj=x
   cat("Number of groups")
   print(obj$NGroups)
   cat("The corresponding groups are")
@@ -337,7 +338,7 @@ print.gfmR<-function(x,...){
 
 
 predict.gfmR<-function(object,newdata,type="probs",...){
-    obj=object
+  obj=object
   if(type=="probs"){
     return(CalcProbs(Beta = obj$Coeff[,-dim(obj$Coeff)[2]],X = cbind(1,newdata)))
   }
@@ -395,7 +396,7 @@ GFMR.cv<-function(Y,X,lamb,sampID,H,n.cores=1,rho=10^-8,...){
 }
 
 print.gfmR.cv<-function(x,...){
-    obj=x
+  obj=x
   cat("Best Tuning Parameter")
   print(obj$lambda[which(x$vl==max(x$vl)[1])])
   cat("Validation Likelihood")
